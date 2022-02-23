@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<title>Drug Search Results</title>
+			<meta name="viewport" content="width=device-width,initial-scale=1">
+			<link rel="stylesheet" href="/static/css/style.css"/>
+			<script>
+				var api = 'https://api.fda.gov/drug/label.json?api_key=uNCup8AVrknxHlyz0b3UIvd1Q7nQrC9bIzdH7fll&search=dosage_and_administration:';
+				var queryString = location.search.substring(1);
+				var url = api + queryString;
+
+				window.onbeforeunload = function () {
+					window.scrollTo(0, 0);
+					}
+
+				fetch(url)
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (data) {
+					appendData(data);
+				})
+				.catch(function (err) {
+					console.log(err);
+				});
+
+				function appendData(data) {
+					var disclaimer = document.getElementById("disclaimer");
+					var drug = document.getElementById("drug");
+					var description = document.getElementById("description");
+					var warning = document.getElementById("warning");
+					var usage = document.getElementById("usage");
+					var dosage = document.getElementById("dosage");
+					var interactions = document.getElementById("interactions");
+					var mothers = document.getElementById("mothers");
+					var children = document.getElementById("children");
+					var reactions = document.getElementById("reactions");
+
+					var divDisclaimer = document.createElement("div");
+					var divDrug = document.createElement("div");
+					var divDescription = document.createElement("div");
+					var divWarning = document.createElement("div");
+					var divUsage = document.createElement("div");
+					var divDosage = document.createElement("div");
+					var divInteractions = document.createElement("div");
+					var divMothers = document.createElement("div");
+					var divChildren = document.createElement("div");
+					var divReactions = document.createElement("div");
+
+					divDisclaimer.innerHTML = data.meta.disclaimer;
+					disclaimer.appendChild(divDisclaimer);
+
+					divDrug.innerHTML = data.results[0].spl_product_data_elements[0];
+					drug.appendChild(divDrug);
+
+					divDescription.innerHTML = data.results[0].description[0];
+					description.appendChild(divDescription);
+
+					divWarning.innerHTML = data.results[0].boxed_warning[0];
+					warning.appendChild(divWarning);
+
+					divUsage.innerHTML = data.results[0].indications_and_usage[0];
+					usage.appendChild(divUsage);
+
+					divDosage.innerHTML = data.results[0].dosage_and_administration[0];
+					dosage.appendChild(divDosage);
+
+					divInteractions.innerHTML = data.results[0].drug_interactions[0];
+					interactions.appendChild(divInteractions);
+
+					divMothers.innerHTML = data.results[0].nursing_mothers[0];
+					mothers.appendChild(divMothers);
+
+					divChildren.innerHTML = data.results[0].pediatric_use[0];
+					children.appendChild(divChildren);
+
+					divReactions.innerHTML = data.results[0].adverse_reactions[0];
+					reactions.appendChild(divReactions);
+				}
+			</script>
+		</head>
+	<body>
+		<div><a href="{{ url_for('home') }}" class="btn btn-dark"  style="font-size:40px">Return to home</a></div><br>
+
+		<p class = "drugInformationDivsLabels" style = "color: red">Disclaimer:</p>
+		<div id="disclaimer" class = "drugInformationDivs" style = "color: red"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Drug:</p>
+		<div id="drug" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Description:</p>
+		<div id="description" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Boxed Warning:</p>
+		<div id="warning" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Indications and Usage:</p>
+		<div id="usage" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Dosage and Administration:</p>
+		<div id="dosage" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Drug Interactions:</p>
+		<div id="interactions" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Nursing Mothers:</p>
+		<div id="mothers" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Pediatric Use:</p>
+		<div id="children" class = "drugInformationDivs"></div><br><br>
+
+		<p class = "drugInformationDivsLabels">Adverse Reactions:</p>
+		<div id="reactions" class = "drugInformationDivs"></div><br><br>
+	</body>
+</html> 

@@ -50,3 +50,17 @@ body {
 .table {
   font-size: 57px;
 }
+
+.images {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.drugInformationDivsLabels {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.drugInformationDivs {
+  font-size: 25px;
+}
