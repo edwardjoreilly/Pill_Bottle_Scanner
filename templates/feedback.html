@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" class="html">
+	
+	
+    	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
+		<title>Feedback</title>
+		<link rel="stylesheet" href="/static/css/style.css"/>
+		<style>
+            .shadow {
+                border-radius: 5px;
+                background-color: #f2f2f2;
+                padding: 20px;
+            }
+            .textF{
+                height: 200px;
+                width: 950px;
+		font-size: 20px;
+            }
+            input[type=submit] {
+                background-color: #0452aa;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+		font-size: 18px;
+            }
+            input[type=submit]:hover {
+                background-color: #455aa0;
+            }
+            input[type=button]{
+                float: right;
+		padding: 10px 15px;
+		cursor: pointer;
+		font-size: 18px;
+            }
+		</style>
+	</head>
+    {% block content %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                <div role="alert" style="color:red;">
+                    <li>{{ message }}</li>
+                </div>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        <h1><center>Feedback Form</center></h1>
+        <h3>Hello, please leave us your feedback!</h3>
+	<p style="color:red; font-size: 20px; ">(Caution: If you have submitted the feedback before, the new feedback will replace the old one!)</p>
+
+        <div class="shadow">
+            <form name="form" "{{ url_for('feedback') }}" method="post" autocomplete="off">
+                <!-- <input type="text" name="feedback" id="feedback" class="form__input" placeholder="Please share your thoughts with us..." required/><br><br> --> 
+                <!-- <textarea class="form__input" type="text" name="feedback" id="feedback" style="height:200px;" placeholder="Please share your thoughts with us..." required/></textarea> -->
+                <textarea class="textF" type="text" id="feedback" name="feedback" style="height:200px;" placeholder="Please share your thoughts with us..." required/></textarea>
+                <br><br>
+                <input type="submit" value="Submit">
+            </form>    
+        </div>
+
+        <br>
+	<div class = "click">
+		<a href="{{ url_for('home') }}">
+    			<form action="/">
+        			 <input class="btn" type="button" value="Back to Main Menu" />
+    			</form>
+		</a>
+		<!--<a href="{{ url_for('home') }}" type= >Back to Main Menu</a></p>
+        	 <input type="button" value="Back to Main Menu" > -->
+	</div>
+    {% endblock %}
+</html>
