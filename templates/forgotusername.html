@@ -1,5 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
+	<style>
+		body {
+		  background-color: #a2a5b3;
+		}
+		header {
+		  align-items: center;
+		  border-bottom: 1px solid #000000;
+		}
+		header .title {
+		  font-family: Palatino, URW Palladio L, serif;
+		  font-size: 40px;
+		  font-weight: 300;
+		  text-align: center;
+		}
+		title1 {
+		  font-family: Times New Roman;
+		  font-size: 24px;
+		}
+		div.a {
+		  font-size: 28px;
+		  font-weight: 600;
+		}
+		div.b {
+		  font-family: serif;
+		}
+		mid {
+		  align-items: center;
+		}
+		mid .middle {
+		  text-align:center;
+		}
+		.abc {
+		  text-indent: 5px;
+		}
+	</style>
+
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
 		<title>PBScanner</title>
@@ -17,11 +54,17 @@
 		</script>
 	</head>
 	<body onload="document.form.reset();">
-		<h1>Forgot Your Username?</h1>
-		<h3>Enter your email:</h3>
+	<mid>
+	<div class="middle">
+		<header>
+			<div class="title">PBScanner</div>
+		</header><div style="height:5px;"></div>
+
+		<div class="a">Forgot Your Username?</div><br><br>
+		<title1>Enter your email:</title1><br><br>
 		<form action="{{ url_for('forgotusername') }}" method="POST" name="form">
 			<div class="form__fieldset">
-				<label for="email" class="form__label">Email:</label><br>
+				<label for="email" class="form__label, abc">Email:</label><br>
 				<input type="text" name="email" placeholder="Email" id="email" class="form__input" required/><br><br>
 			</div>
 
@@ -40,6 +83,8 @@
 		{% endfor %}
 		{% endif %}
 		{% endwith %}
-		<a href="{{ url_for('home') }}" class="btn btn-dark ">Home</a>
+		<a href="{{ url_for('login') }}" class="btn btn-dark ">Back to Login</a>
+	</div>
+	</mid>
 	</body>
 </html>

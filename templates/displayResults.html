@@ -1,5 +1,25 @@
 <!DOCTYPE html>
 	<html lang="en">
+
+	<style>
+		body {
+		  background-color: #a2a5b3;
+		}
+		div.a {
+		  text-align: center;
+		}
+		header {
+		  align-items: center;
+		  border-bottom: 1px solid #000000;
+		}
+		header .title {
+		  font-family: Palatino, URW Palladio L, serif;
+		  font-size: 40px;
+		  font-weight: 300;
+		  text-align: center;
+		}
+	</style>
+
 		<head>
 			<meta charset="UTF-8">
 			<title>Drug Search Results</title>
@@ -81,7 +101,10 @@
 			</script>
 		</head>
 	<body>
-		<div><a href="{{ url_for('home') }}" class="btn btn-dark"  style="font-size:40px">Return to home</a></div><br>
+		<header> 
+			<div class = "title"> PBScanner </div>
+		</header>
+		<div class="a"><a href="{{ url_for('home') }}" class="btn btn-dark"  style="font-size:20px">Return to home</a></div><br>
 
 		<p class = "drugInformationDivsLabels" style = "color: red">Disclaimer:</p>
 		<div id="disclaimer" class = "drugInformationDivs" style = "color: red"></div><br><br>
@@ -112,5 +135,7 @@
 
 		<p class = "drugInformationDivsLabels">Adverse Reactions:</p>
 		<div id="reactions" class = "drugInformationDivs"></div><br><br>
+
+		<div class="a"><a href="{{ url_for('home') }}" class="btn btn-dark"  style="font-size:20px">Return to home</a></div>
 	</body>
 </html> 

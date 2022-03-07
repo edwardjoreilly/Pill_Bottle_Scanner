@@ -1,8 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
+	<style>
+		body {
+		  background-color: #a2a5b3;
+		}
+		header {
+		  align-items: center;
+		  border-bottom: 1px solid #000000;
+		}
+		header .title {
+		  font-family: Palatino, URW Palladio L, serif;
+		  font-size: 40px;
+		  font-weight: 300;
+		  text-align: center;
+		}
+		title1 {
+		  font-family: Helvetica, sans-serif;
+		  font-size: 36px;
+		}
+		div.a {
+		  font-size: 28px;
+		}
+		mid {
+		  align-items: center;
+		}
+		mid .middle {
+		  text-align:center;
+		}
+		.abc {
+		  text-indent: 5px;
+		}
+	</style>
+
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
-		<title>PBscanner</title>
+		<title>PBScanner</title>
 		<link rel="stylesheet" href="/static/css/style.css"/>
 		<script>
 			function seePassword() {
@@ -25,9 +58,14 @@
 				}
 			}
 		</script>
+		<header>
+			<div class="title">PBScanner</div>
+		</header>
 	</head>
 	<body>
-		<h1>Please register below</h1>
+	<mid>
+	<div class="middle"><div style="height:5px;"></div>
+		<div class="a">Please register below</div>
 		<form name="form" "{{ url_for('register') }}" method="post" autocomplete="off">
 			<div class="form-group">
 				{% with messages = get_flashed_messages()  %}
@@ -46,55 +84,54 @@
 			</div>
 
 			<div class="form__fieldset">
-				<label for="username" class="form__label">Username:</label><br>
+				<label for="username" class="form__label, abc">Username:</label><br>
 				<input type="text" name="username" id="username" class="form__input" placeholder="Enter a username" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="firstname" class="form__label">First name:</label><br>
+				<label for="firstname" class="form__label, abc">First name:</label><br>
 				<input type="text" name="firstname" id="firstname" class="form__input" placeholder="Enter your first name" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="lastname" class="form__label">Last name:</label><br>
+				<label for="lastname" class="form__label, abc">Last name:</label><br>
 				<input type="text" name="lastname" id="lastname" class="form__input" placeholder="Enter your last name" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="email" class="form__label">Email:</label><br>
+				<label for="email" class="form__label, abc">Email:</label><br>
 				<input type="email" name="email" id="email" class="form__input" placeholder="Enter your email address" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="password" class="form__label">Enter a valid password:</label><br>
-				<input type="password" name="password" id="password" class="form__input" placeholder="Enter your password" required/>
+				<label for="password" class="form__label, abc">Enter a valid password:</label><br>
+				<input type="password" name="password" id="password" class="form__input" placeholder="Enter your password" required/><br>
 				<input type="checkbox" onclick="seePassword()">Show Password</input><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="password2" class="form__label">Re-enter the password again:</label><br>
-				<input type="password" name="password2" id="password2" class="form__input" placeholder="Re-enter your password" required/>
+				<label for="password2" class="form__label, abc">Re-enter the password again:</label><br>
+				<input type="password" name="password2" id="password2" class="form__input" placeholder="Re-enter your password" required/><br>
 				<input type="checkbox" onclick="seePassword2()">Show Password</input><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="securityq1Field" class="form__label">What is your mother's maiden name?</label><br>
+				<label for="securityq1Field" class="form__label, abc">What is your mother's maiden name?</label><br>
 				<input type="text" id="securityq1" name="securityq1"  class="form__input" placeholder="Enter your answer" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="securityq2Field" class="form__label">What was the name of your first pet?</label><br>
+				<label for="securityq2Field" class="form__label, abc">What was the name of your first pet?</label><br>
 				<input type="text" id="securityq2" name="securityq2" class="form__input" placeholder="Enter your answer" required/><br><br>
-			</div>
+			</div><br>
 
-			<div class="form__fieldset">
-				<input class="form__submit form__input" type="submit" value="Create my account" />
-			</div>
-			
-			<div class="form-group">
-				<p style="padding:5px;">
-				<a href="{{ url_for('login') }}" class="btn btn-dark ">Login here</a></p>
-			</div>
+			<input class="form__submit form__input" type="submit" value="Create my account" /><div style="height:20px;"></div>
+
+			<div><a href="{{ url_for('login') }}" class="btn btn-dark">Login here</a></div>
+
+			<p style="padding:5px;"></p>
 		</form>
+	</div>
+	<mid>
 	</body>
 </html>

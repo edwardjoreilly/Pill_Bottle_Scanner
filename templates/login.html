@@ -1,5 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
+	<style>
+		body {
+		  background-color: #a2a5b3;
+		}
+		.form__fieldset {
+		  align-items: center;
+		  text-align: center;
+		  align-self: center;
+		  align-content: center;
+		}
+		header {
+		  align-items: center;
+		  border-bottom: 1px solid #000000;
+		}
+		header .title {
+		  font-family: Palatino, URW Palladio L, serif;
+		  font-size: 40px;
+		  font-weight: 300;
+		  text-align: center;
+		}
+		title1 {
+		  font-family: Helvetica, sans-serif;
+		  font-size: 36px;
+		}
+		div.a {
+		  font-size: 20px;
+		  text-indent: 2px;
+		}
+		mid {
+		  align-items: center;
+		}
+		mid .middle {
+		  text-align:center;
+		}
+		.abc {
+		  text-indent: 5px;
+		}
+	</style>
+
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
 		<title>PBScanner</title>
@@ -17,16 +57,21 @@
 		</script>
 	</head>
 	<body onload="document.form.reset();">
-		<h1>Welcome to PBScanner!</h1>
-		<h3>Please login:</h3>
+		<header> 
+			<div class = "title"> PBScanner </div>
+		</header><br>
+	<mid>
+	<div class="middle">
+		<title1>Welcome!</title1><br>
+		<div class="a">Please login:</div>
 		<form action="{{ url_for('login') }}" method="POST" name="form">
 			<div class="form__fieldset">
-				<label for="username" class="form__label">Username:</label><br>
+				<label for="username" class="form__label, abc">Username:</label><br>
 				<input type="text" name="username" placeholder="Username" id="username" class="form__input" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="password" class="form__label">Password:</label><br>
+				<label for="password" class="form__label, abc">Password:</label><br>
 				<input type="password" name="password" placeholder="Password" id="password" class="form__input" required/><br><br>
 				<input type="checkbox" onclick="seePassword()">Show Password</input><br><br>
 			</div>
@@ -47,5 +92,7 @@
 		<p>No account? <a href="{{ url_for('register') }}">Register here</a></p>
 		<p>Forgot Password? <a href="{{ url_for('forgotpassword') }}">Recover here</a></p>
 		<p>Forgot Username? <a href="{{ url_for('forgotusername') }}">Recover here</a></p>
+	</div>
+	</mid>
 	</body>
 </html>
