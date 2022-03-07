@@ -62,6 +62,14 @@ try:
 except psycopg2.errors.DuplicateTable:
 	pass
 
+# Create feedback table
+try:
+	with connection:
+		with connection.cursor() as cursor:
+			cursor.execute("CREATE TABLE feedback (id SERIAL PRIMARY KEY, firstname VARCHAR (100) NOT NULL, lastname VARCHAR (100) NOT NULL, user_name VARCHAR (50) NOT NULL, content VARCHAR (1000) NOT NULL);")
+except psycopg2.errors.DuplicateTable:
+	pass
+
 
 
 ### Web pages and Functions ###
@@ -212,6 +220,13 @@ def login():
 	print("\n\n\n".join(str(e) for e in myStatement).replace("(","").replace(")",""))
 	print("\n\n\n\n\n")
 
+	# Display feedback databse table in terminal
+	cursor.execute("SELECT * FROM feedback")
+	myStatement = (cursor.fetchall())
+	print("\n\n-----------------------feedback-----------------------------")
+	print("\n\n".join(str(e) for e in myStatement).replace("(","").replace(")",""))
+	print("\n\n------------------------------------------------------------")
+
 	# Check if "username" and "password" POST requests exist (user submitted form)
 	if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
 		username = request.form['username']
@@ -221,7 +236,12 @@ def login():
 		cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
 		# Fetch one record and return result
 		account = cursor.fetchone()
- 
+		#print(account['id'])
+		#print(account['username'])
+		#print(account['firstname'])
+		#print(account['lastname'])
+		#print(cursor.description)
+
 		if account:
 			password_rs = account['password']
 			# If account exists in users table in db
@@ -231,6 +251,7 @@ def login():
 				session['id'] = account['id']
 				session['username'] = account['username']
 				session['firstname'] = account['firstname']
+				session['lastname'] = account['lastname']
 				# Redirect to home page
 				return redirect(url_for('home'))
 			else:
@@ -241,6 +262,74 @@ def login():
 			flash("Either your account doesn't exist or you have entered the wrong username or password.")
 
 	return render_template("login.html")
+
+# feedback page
+@app.route("/feedback", methods=["GET", "POST"])
+def feedback():
+	# Connect to db
+	cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+	sent = False
+
+	# Display feedback databse table in terminal
+	cursor.execute("SELECT * FROM feedback")
+	myStatement = (cursor.fetchall())
+	print("\n\n\n\n\n-------------------------feedback--------------------------")
+	print("\n\n\n".join(str(e) for e in myStatement).replace("(","").replace(")",""))
+	print("\n\n\n\n\n-----------------------------------------------------------")
+
+	cursor.execute('SELECT * FROM users WHERE firstname = %s', (session['firstname'],))
+	posts = cursor.fetchone()
+
+	#if 'loggedin' in session:		
+		# show name in feedback page
+		#return render_template('feedback.html', firstname = session['firstname'])
+	
+	
+	if request.method == 'POST' and 'feedback' in request.form:
+		FB = request.form['feedback']
+		print(FB)
+		# Display user's previous entries
+		#cursor.execute('SELECT * FROM users WHERE username = %s', (session['username'],))
+		#posts = cursor.fetchall()
+		print("------------------------------------------------")
+		#print(cursor.description)
+		# for row in posts:
+		# 	print("ID =", row[0])
+		# 	print("First name =", row[1])
+		# 	print("Last name =", row[2])
+		# 	print("User name =", row[3])
+		username = session['username']
+		#print(username)
+		firstname = session['firstname']
+		#print(firstname)
+		lastname = session['lastname']
+		#print(session['lastname'])
+		#print(lastname)			
+
+		#see if the user in feedback table already exist
+		cursor.execute('SELECT * FROM feedback WHERE user_name = %s', (session['username'],))
+		account = cursor.fetchone()
+		contents = FB
+		if account:	#if feedback users already in the table
+			print("feedback already exist! Overwriting!")
+			contents = FB
+			sql = "UPDATE feedback SET content = %s WHERE user_name = %s"
+			val = (contents,username)
+			cursor.execute(sql,val)					
+		else:
+			cursor.execute("INSERT INTO feedback (firstname, lastname, user_name, content) VALUES (%s,%s,%s,%s)", (firstname, lastname, username,contents))			
+		connection.commit()
+		sent = True
+		flash('You have successfully submit your feedback!')			
+	elif request.method == 'POST':
+		# Form is empty... (no POST data)
+		flash('Please fill out the form!')
+	
+	#return redirect(url_for('home'))
+	return render_template('feedback.html', sent=sent)
+	
+
+	
 
 
 
