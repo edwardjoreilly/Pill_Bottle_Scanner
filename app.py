@@ -236,11 +236,6 @@ def login():
 		cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
 		# Fetch one record and return result
 		account = cursor.fetchone()
-		#print(account['id'])
-		#print(account['username'])
-		#print(account['firstname'])
-		#print(account['lastname'])
-		#print(cursor.description)
 
 		if account:
 			password_rs = account['password']
