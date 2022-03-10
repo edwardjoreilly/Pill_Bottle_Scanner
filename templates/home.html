@@ -1,18 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" class="html">
+
+	<style>
+		body {
+		  background-color: #a2a5b3;
+		}
+		header {
+		  align-items: center;
+		  border-bottom: 1px solid #000000;
+		}
+		header .title {
+		  font-family: Palatino, URW Palladio L, serif;
+		  font-size: 40px;
+		  font-weight: 300;
+		  text-align: center;
+		}
+		title1 {
+		  font-family: Times New Roman;
+		  font-size: 24px;
+		}
+		div.a {
+		  font-size: 28px;
+		  font-weight: 600;
+		}
+		div.b {
+		  font-family: serif;
+		}
+		mid {
+		  align-items: center;
+		}
+		mid .middle {
+		  text-align:center;
+		}
+	</style>
+
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
+	<body>
+	<mid>
+	<div class="middle">
 		<title>Homepage</title>
 		<link rel="stylesheet" href="/static/css/style.css"/>
 		<style>
 			table, td {
 			  border: 1px solid black;
 			  border-collapse: collapse;
+			  font-size: 30px;
 			}
 
 			th {
 			  border: 5px solid black;
 			  border-collapse: collapse;
+			  font-size: 30px;
 			}
 
 			table {
@@ -21,9 +60,12 @@
 		</style>
 	</head>
 	{% block content %}
-	<h1 class="h2">Homepage</h1>
-	<h2 class="h2">Welcome back, {{ firstname }}!</h2>
-		<h4 class="h2">Here is your current list of Prescriptions:</h4>
+	<header>
+		<div class="title">PBScanner</div>
+	</header><div style="height:5px;"></div>
+	<title1>Home</title1><br><br>
+	<div class="b">Welcome back, {{ firstname }}!</div><br>
+		<div class="a">Here is your current list of Prescriptions:</div>
 		<div class="table">
 			<table>
 				<tr>
@@ -56,25 +98,27 @@
 		</div><br><br><br>
 
 		<form action="{{ url_for('displayResults') }}" method="GET" name="form">
-			<label class="form__label">Please enter the name of the drug you wish to learn more about in the box below.</label><br><br>
-			<input type="search" name="drugName" placeholder="Drug name:" id="drugName" class="form__input" required/><br><br>
-			<input id = "apiSearch" class="form__submit form__input" type="submit" value="Search for drug"/><br>
+			<label class="form__label">Please enter the name of the drug you wish to learn more about in the box below:</label><br><br>
+			<input type="search" name="drugName" placeholder="Drug name:" id="drugName" class="form__input" style="max-width: 70%" required/><br><br>
+			<input id = "apiSearch" class="form__submit form__input" type="submit" value="Search for drug" style="max-width: 95%"/><br>
 		</form><br><br>
 
 		<form method="POST" action="{{ url_for('add') }}" enctype="multipart/form-data" name="form">
 			<label class="form__label">Please select a file to upload and extract the text:</label><br><br>
-			<input type="file" name="file" class="form__submit form__input" autocomplete="off" required>
-			<input type="submit" value="Add a new prescription from an image" class="form__submit form__input">
-		</form><br><br><br><br><br><br><br>
+			<input type="file" name="file" class="form__submit form__input" autocomplete="off" style="max-width: 95%" required>
+			<input type="submit" value="Add a new prescription from an image" class="form__submit form__input" style="max-width: 95%">
+		</form><br><br><br><br><br>
 
 		<form action="{{ url_for('delete') }}" method="POST" name="form">
 			<label for="ID" class="form__label">Please enter the ID# next to the Prescription that you want to delete:</label><br><br>
-			<input type="text" name="ID" placeholder="Please enter ID # here" id="ID" class="form__input" required/><br><br>
-			<input class="form__submit form__input" type="submit" value="Remove Prescription" onclick="return confirm('Are you sure you want to delete this post?')" /><br>
+			<input type="text" name="ID" placeholder="Please enter ID # here" id="ID" class="form__input" style="max-width: 70%" required/><br><br>
+			<input class="form__submit form__input" type="submit" value="Remove Prescription" style="max-width: 95%" onclick="return confirm('Are you sure you want to delete this post?')" /><br>
 		</form>
 
-		<div>
-			<a href="{{ url_for('logout') }}" class="btn btn-dark ">Logout</a>
-		</div>
+		<br>
+			<a href="{{ url_for('logout') }}" class="btn btn-dark" style="font-size: 20px">Logout</a>
+	</div>
+	</mid>
+	</body>
 	{% endblock %}
 </html>

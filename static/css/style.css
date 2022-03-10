@@ -18,7 +18,7 @@ body {
 }
 
 .form__input {
-  font-size: 1rem;
+  font-size: 0.65rem;
 }
 
 .form__select {
@@ -35,7 +35,7 @@ body {
   border: 2px solid #1c2023;
   border-radius: 4px;
   cursor: pointer;
-  float: right;
+  float: middle;
 }
 
 .form__submit:hover {
