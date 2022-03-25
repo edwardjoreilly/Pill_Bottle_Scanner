@@ -3,21 +3,39 @@ import sys
 import psycopg2
 import psycopg2.extras
 import re
-import os
+import os, io
 import imp
 import urllib.request
 import secrets
+import json
+import requests
+import cv2
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+from google.cloud import vision
+from google.cloud.vision_v1 import types
 from flask_mail import Mail
 from flask_mail import Message
-from flask import Flask, render_template, request, session, redirect, url_for, flash, send_file
+from flask import Flask, render_template, request, session, redirect, url_for, flash, send_file, jsonify, Response
+from json import dumps
+from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 from paddleocr import PaddleOCR
 from os.path import exists
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+CORS(app)
+
+cors = CORS(app, resources={
+	r"/*": {
+		"origins": "*"
+	}
+})
 
 UPLOAD_FOLDER = 'static/uploads/'
+FOLDER_PATH = r'static/uploads/'
 
 # secret key for flash messages
 ### [REMOVE THIS SECRET KEY FROM THIS FILE BEFORE UPLOADING TO GITHUB OTHERWISE THE SECRET KEY WILL BE MADE PUBLIC (i.e. app.secret_key ='']) ###
@@ -32,6 +50,10 @@ pass_recovery = {}
 pass_recovery["123456"] = 1 #for testing
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'pbscanner-6564811b6d9d.json'
+
+client = vision.ImageAnnotatorClient()
 
 # Elephant SQL connection
 ### [REMOVE THIS POSTGRESQL WEBLINK FROM THIS FILE BEFORE UPLOADING TO GITHUB OTHERWISE DB ACCESS WILL BE MADE PUBLIC (i.e. POSTGRESQL_URI =""]) ###
@@ -62,6 +84,14 @@ try:
 except psycopg2.errors.DuplicateTable:
 	pass
 
+# Create appointments table
+try:
+	with connection:
+		with connection.cursor() as cursor:
+			cursor.execute("CREATE TABLE appointments (id SERIAL PRIMARY KEY, firstname VARCHAR (100) NOT NULL, lastname VARCHAR (100) NOT NULL, user_name VARCHAR (50) NOT NULL, content VARCHAR (1000) NOT NULL);")
+except psycopg2.errors.DuplicateTable:
+	pass
+
 
 
 ### Web pages and Functions ###
@@ -71,16 +101,76 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Read prescription label
-def getPrescription():
-	list = []
+def getPrescription(filename):
+	with io.open(os.path.join(FOLDER_PATH, filename), 'rb') as image_file:
+			content = image_file.read()
 
-	ocr_model = PaddleOCR(lang='en')
-	result = ocr_model.ocr(img_path)
+	image = types.Image(content=content)
+	response = client.text_detection(image=image)
+	texts = response.text_annotations
 
-	for res in result:
-		list.append(res[1][0])
+	df = pd.DataFrame(columns=['locale', 'description'])
+	for text in texts:
+		df = df.append(
+			dict(
+				locale=text.locale,
+				description=text.description
+			),
+			ignore_index=True
+		)
 
-	return list
+	l = df['description'].values.tolist()
+	print(df)
+	print(l)
+
+	return l
+
+# Fix skew angle in image
+def getSkewAngle(cvImage) -> float:
+    # Prep image, copy, convert to gray scale, blur, and threshold
+    newImage = cvImage.copy()
+    gray = cv2.cvtColor(newImage, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (9, 9), 0)
+    thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+
+    # Apply dilate to merge text into meaningful lines/paragraphs.
+    # Use larger kernel on X axis to merge characters into single line, cancelling out any spaces.
+    # But use smaller kernel on Y axis to separate between different blocks of text
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (30, 5))
+    dilate = cv2.dilate(thresh, kernel, iterations=2)
+
+    # Find all contours
+    contours, hierarchy = cv2.findContours(dilate, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    contours = sorted(contours, key = cv2.contourArea, reverse = True)
+    for c in contours:
+        rect = cv2.boundingRect(c)
+        x,y,w,h = rect
+        cv2.rectangle(newImage,(x,y),(x+w,y+h),(0,255,0),2)
+
+    # Find largest contour and surround in min area box
+    largestContour = contours[0]
+    print (len(contours))
+    minAreaRect = cv2.minAreaRect(largestContour)
+    cv2.imwrite("temp/boxes.jpg", newImage)
+    # Determine the angle. Convert it to the value that was originally used to obtain skewed image
+    angle = minAreaRect[-1]
+    if angle < -45:
+        angle = 90 + angle
+    return -1.0 * angle
+
+# Rotate the image around its center
+def rotateImage(cvImage, angle: float):
+    newImage = cvImage.copy()
+    (h, w) = newImage.shape[:2]
+    center = (w // 2, h // 2)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    newImage = cv2.warpAffine(newImage, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+    return newImage
+
+# Deskew image
+def deskew(cvImage):
+    angle = getSkewAngle(cvImage)
+    return rotateImage(cvImage, -1.0 * angle)
 
 # Homepage
 @app.route("/", methods=["GET", "POST"])
@@ -103,14 +193,53 @@ def home():
 
 
 
-# Test file
+# Display API results
 @app.route("/displayResults", methods=["GET", "POST"])
 def displayResults():
-	return render_template('displayResults.html')
+	# set up flash messages for what the user searched and what they meant to search for
+
+	drugName = request.form['drugName']
+
+	l = []
+	l.append('https://serpapi.com/search.json?engine=google&q=')
+	l.append(drugName)
+	l.append('')
+	s = ''.join(l)
+
+	req = requests.get(s)
+	data = json.loads(req.content)
+
+	search_information = data['search_information']
+	
+	try:
+		spelling_fix = search_information['spelling_fix']
+
+		li = []
+		li.append('You searched for "')
+		li.append(drugName)
+		li.append('". It was corrected to "')
+		li.append(spelling_fix)
+		li.append('".')
+
+		st = ''.join(li)
+
+		flash(st)
+
+		return render_template('displayResults.html', drugName=spelling_fix)
+	except:
+		li = []
+		li.append('You searched for "')
+		li.append(drugName)
+		li.append('".')
+
+		st = ''.join(li)
+
+		flash(st)
+		return render_template('displayResults.html', drugName=drugName)
 
 
 
-# Upload file
+# Upload and add file
 @app.route("/add", methods=["GET", "POST"])
 def add():
 	global img_path
@@ -135,13 +264,19 @@ def add():
 	img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 	print(img_path)
 
+	# Preprocess image for text extraction
+	img = cv2.imread(img_path)
+	#gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	fixed = deskew(img)
+	cv2.imwrite('static/uploads/temp.jpg', fixed)
+
 	# Translate picture to text
 	try:
-		list = getPrescription() # PaddleOCR function in functions.py
+		ls = getPrescription('temp.jpg') # PaddleOCR function in functions.py
 
 		# Convert list of text elements into a String
 		string1 = ""
-		for l in list:
+		for l in ls[1:]:
 			string1 += ("["+ l + "]  ")
 		
 		# Insert post content into db
@@ -185,7 +320,8 @@ def delete():
 	cursor.execute("DELETE FROM posts WHERE id = %s", (ID,))
 	connection.commit()
 #except:
-	flash("Please enter only only one ID number at a time. i.e. \"1\" or \"53\".")
+	if(os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], imagename))):
+		flash("Please enter only only one ID number at a time. i.e. \"1\" or \"53\".")
 	connection.rollback()
 
 	return redirect(url_for('home'))
@@ -212,7 +348,7 @@ def login():
 	print("\n\n\n".join(str(e) for e in myStatement).replace("(","").replace(")",""))
 	print("\n\n\n\n\n")
 
-	# Display feedback databse table in terminal
+# Display feedback databse table in terminal
 	cursor.execute("SELECT * FROM feedback")
 	myStatement = (cursor.fetchall())
 	print("\n\n-----------------------feedback-----------------------------")
@@ -228,7 +364,7 @@ def login():
 		cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
 		# Fetch one record and return result
 		account = cursor.fetchone()
-
+ 
 		if account:
 			password_rs = account['password']
 			# If account exists in users table in db
@@ -249,74 +385,6 @@ def login():
 			flash("Either your account doesn't exist or you have entered the wrong username or password.")
 
 	return render_template("login.html")
-
-# feedback page
-@app.route("/feedback", methods=["GET", "POST"])
-def feedback():
-	# Connect to db
-	cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-	sent = False
-
-	# Display feedback databse table in terminal
-	cursor.execute("SELECT * FROM feedback")
-	myStatement = (cursor.fetchall())
-	print("\n\n\n\n\n-------------------------feedback--------------------------")
-	print("\n\n\n".join(str(e) for e in myStatement).replace("(","").replace(")",""))
-	print("\n\n\n\n\n-----------------------------------------------------------")
-
-	cursor.execute('SELECT * FROM users WHERE firstname = %s', (session['firstname'],))
-	posts = cursor.fetchone()
-
-	#if 'loggedin' in session:		
-		# show name in feedback page
-		#return render_template('feedback.html', firstname = session['firstname'])
-	
-	
-	if request.method == 'POST' and 'feedback' in request.form:
-		FB = request.form['feedback']
-		print(FB)
-		# Display user's previous entries
-		#cursor.execute('SELECT * FROM users WHERE username = %s', (session['username'],))
-		#posts = cursor.fetchall()
-		print("------------------------------------------------")
-		#print(cursor.description)
-		# for row in posts:
-		# 	print("ID =", row[0])
-		# 	print("First name =", row[1])
-		# 	print("Last name =", row[2])
-		# 	print("User name =", row[3])
-		username = session['username']
-		#print(username)
-		firstname = session['firstname']
-		#print(firstname)
-		lastname = session['lastname']
-		#print(session['lastname'])
-		#print(lastname)			
-
-		#see if the user in feedback table already exist
-		cursor.execute('SELECT * FROM feedback WHERE user_name = %s', (session['username'],))
-		account = cursor.fetchone()
-		contents = FB
-		if account:	#if feedback users already in the table
-			print("feedback already exist! Overwriting!")
-			contents = FB
-			sql = "UPDATE feedback SET content = %s WHERE user_name = %s"
-			val = (contents,username)
-			cursor.execute(sql,val)					
-		else:
-			cursor.execute("INSERT INTO feedback (firstname, lastname, user_name, content) VALUES (%s,%s,%s,%s)", (firstname, lastname, username,contents))			
-		connection.commit()
-		sent = True
-		flash('You have successfully submit your feedback!')			
-	elif request.method == 'POST':
-		# Form is empty... (no POST data)
-		flash('Please fill out the form!')
-	
-	#return redirect(url_for('home'))
-	return render_template('feedback.html', sent=sent)
-	
-
-	
 
 
 
@@ -383,7 +451,7 @@ def logout():
 
 
 
-#Forgot Password
+# Forgot Password
 @app.route("/forgotpassword", methods=["GET", "POST"])
 def forgotpassword():
 	global email_address
@@ -408,7 +476,7 @@ def forgotpassword():
 			pass_recovery[new_key] = user_id
 
 			msg = Message('Password Recovery - PB Scanner', sender =   email_address, recipients = [email])
-			msg.body = "Hey " + username + ", you requested a password reset. Enter the following link to reset your password:\n http://127.0.0.1:5000/resetpassword?k="+new_key
+			msg.body = "Hey " + username + ", you requested a password reset. Enter the following link to reset your password:\n http://0.0.0.0:5000/resetpassword?k="+new_key
 			mail.send(msg)
 			flash("Recovery email sent. Check your mailbox, don't forget to check in the spam folder!")
 			
@@ -420,7 +488,74 @@ def forgotpassword():
 
 
 
-#Forgot Username
+# feedback page
+@app.route("/feedback", methods=["GET", "POST"])
+def feedback():
+	# Connect to db
+	cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+	sent = False
+
+	# Display feedback databse table in terminal
+	cursor.execute("SELECT * FROM feedback")
+	myStatement = (cursor.fetchall())
+	print("\n\n\n\n\n-------------------------feedback--------------------------")
+	print("\n\n\n".join(str(e) for e in myStatement).replace("(","").replace(")",""))
+	print("\n\n\n\n\n-----------------------------------------------------------")
+
+	cursor.execute('SELECT * FROM users WHERE firstname = %s', (session['firstname'],))
+	posts = cursor.fetchone()
+
+	#if 'loggedin' in session:		
+		# show name in feedback page
+		#return render_template('feedback.html', firstname = session['firstname'])
+
+
+	if request.method == 'POST' and 'feedback' in request.form:
+		FB = request.form['feedback']
+		print(FB)
+		# Display user's previous entries
+		#cursor.execute('SELECT * FROM users WHERE username = %s', (session['username'],))
+		#posts = cursor.fetchall()
+		print("------------------------------------------------")
+		#print(cursor.description)
+		# for row in posts:
+		# 	print("ID =", row[0])
+		# 	print("First name =", row[1])
+		# 	print("Last name =", row[2])
+		# 	print("User name =", row[3])
+		username = session['username']
+		#print(username)
+		firstname = session['firstname']
+		#print(firstname)
+		lastname = session['lastname']
+		#print(session['lastname'])
+		#print(lastname)			
+
+		#see if the user in feedback table already exist
+		cursor.execute('SELECT * FROM feedback WHERE user_name = %s', (session['username'],))
+		account = cursor.fetchone()
+		contents = FB
+		if account:	#if feedback users already in the table
+			print("feedback already exist! Overwriting!")
+			contents = FB
+			sql = "UPDATE feedback SET content = %s WHERE user_name = %s"
+			val = (contents,username)
+			cursor.execute(sql,val)					
+		else:
+			cursor.execute("INSERT INTO feedback (firstname, lastname, user_name, content) VALUES (%s,%s,%s,%s)", (firstname, lastname, username,contents))			
+		connection.commit()
+		sent = True
+		flash('You have successfully submit your feedback!')			
+	elif request.method == 'POST':
+		# Form is empty... (no POST data)
+		flash('Please fill out the form!')
+
+	#return redirect(url_for('home'))
+	return render_template('feedback.html', sent=sent)
+
+
+
+# Forgot Username
 @app.route("/forgotusername", methods=["GET", "POST"])
 def forgotusername():
 	global email_address
@@ -452,7 +587,7 @@ def forgotusername():
 
 
 
-#Reset Password
+# Reset Password
 @app.route("/resetpassword", methods=["GET", "POST"])
 def resetpassword():
 	global pass_recovery
@@ -462,9 +597,9 @@ def resetpassword():
 	
 
 	# Check if "username" and "password" POST requests exist (user submitted form)
-	if request.method == 'POST' and 'new_password' in request.form and 'new_password2' in request.form and 'secret_key' in request.form:
-		pass1 = request.form['new_password']
-		pass2 = request.form['new_password2']
+	if request.method == 'POST' and 'password' in request.form and 'password2' in request.form and 'secret_key' in request.form:
+		pass1 = request.form['password']
+		pass2 = request.form['password2']
 		secret_key = request.form['secret_key']
 		if secret_key is None or secret_key not in pass_recovery:
 			return "",400
