@@ -39,19 +39,11 @@ FOLDER_PATH = r'static/uploads/'
 
 # secret key for flash messages
 ### [REMOVE THIS SECRET KEY FROM THIS FILE BEFORE UPLOADING TO GITHUB OTHERWISE THE SECRET KEY WILL BE MADE PUBLIC (i.e. app.secret_key ='']) ###
-app.secret_key = '\x9f\xed\xb7\xb4bo\xc4\xb5\xcb\x00W\x0b'
+app.secret_key = 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 # EMAIL DATA REMOVE BEFORE UPLOADING TO GITHUB
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-email_address = 'Comp490lab@gmail.com'
-app.config['MAIL_USERNAME'] = email_address
-app.config['MAIL_PASSWORD'] = 'Everyone123!'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-mail = Mail(app)
 
 #form:  {secret_key1 : id, secret_key2 : ...}
 pass_recovery = {}
@@ -65,7 +57,7 @@ client = vision.ImageAnnotatorClient()
 
 # Elephant SQL connection
 ### [REMOVE THIS POSTGRESQL WEBLINK FROM THIS FILE BEFORE UPLOADING TO GITHUB OTHERWISE DB ACCESS WILL BE MADE PUBLIC (i.e. POSTGRESQL_URI =""]) ###
-POSTGRESQL_URI = "postgres://zvnmwduo:gjGsAHHJjKbCnQLSEmyS3H2VlnMk-ZIq@kashin.db.elephantsql.com/zvnmwduo"
+POSTGRESQL_URI = 
 connection = psycopg2.connect(POSTGRESQL_URI)
 
 # Create users table
@@ -211,7 +203,7 @@ def displayResults():
 	l = []
 	l.append('https://serpapi.com/search.json?engine=google&q=')
 	l.append(drugName)
-	l.append('&api_key=be30e84c63b05880827494010e2956ce883982e30456e02561ba679e3ae38745')
+	l.append('')
 	s = ''.join(l)
 
 	req = requests.get(s)
@@ -445,51 +437,6 @@ def register():
 		flash('Please fill out the form!')
 	# Show registration form with message (if any)
 	return render_template('register.html', sent=sent)
-
-
-
-# Appointment page
-@app.route("/appointment", methods=["GET", "POST"])
-def appointment():
-	# Connect to db
-	cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-	sent = False
- 
-	# Check if all fields POST requests exist (user submitted form)
-	if request.method == 'POST' and 'starttime' in request.form and 'endtime' in request.form and 'date' in request.form:
-		# Create variables for easy access
-		starttime = request.form['starttime']
-		endtime = request.form['endtime']
-		date = request.form['date']
- 
-		# Check if account exists using MySQL
-		cursor.execute('SELECT * FROM appointments WHERE username = %s', (username,))
-		account = cursor.fetchone()
-		# If account exists show error and validation checks
-		if account:
-			flash('Account already exists!')
-		elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-			flash('Invalid email address!')
-		elif not re.match(r'[A-Za-z0-9]+', username):
-			flash('Username must contain only characters and numbers!')
-		elif not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,18}$', password):
-			flash('Password must contain one uppercase letter, one lowercase letter, one number, one special character(@, $, !, %, *, #, ?, &), and must be 8-18 characters long.')
-		elif password != password2:
-			flash('Passwords do not match.')
-		elif not username or not password or not email:
-			flash('Please fill out the form!')
-		else:
-			# Account doesnt exist and the form data is valid, now insert new account into users table
-			cursor.execute("INSERT INTO appointments (starttime, endtime, date) VALUES (%s,%s,%s)", (starttime, endtime, date))
-			connection.commit()
-			sent = True
-			flash('Your appointment has been added!')
-	elif request.method == 'POST':
-		# Form is empty... (no POST data)
-		flash('Please fill out the form!')
-	# Show registration form with message (if any)
-	return render_template('appointment.html', sent=sent)
 
 
 
