@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
+		<title>PBScanner</title>
+		<link rel="stylesheet" href="/static/css/style.css"/>
+	</head>
+	<body onload="document.form.reset();">
+		<h1>Welcome to PBScanner!</h1>
+		<h3>Please login:</h3>
+		<form action="{{ url_for('facelogin') }}" method="POST" name="form">
+			<div class="form__fieldset">
+				<label for="username" class="form__label">Username:</label><br>
+				<input type="text" name="username" placeholder="Username" id="username" class="form__input" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<input class="form__submit form__input" type="submit" value="Take Photo and Login" name=""/>
+			</div>
+		</form>
+		{% with messages = get_flashed_messages()  %}
+		{% if messages %}
+		{% for message in messages %}
+		<div role="alert" style="color:red;">
+			{{ message }}
+		</div>
+		{% endfor %}
+		{% endif %}
+		{% endwith %}
+		<p>Login with Password? <a href="{{ url_for('login') }}">Login here</a></p>
+		<p>No account? <a href="{{ url_for('register') }}">Register here</a></p>
+		<p>Forgot Password? <a href="{{ url_for('forgotpassword') }}">Recover here</a></p>
+		<p>Forgot Username? <a href="{{ url_for('forgotusername') }}">Recover here</a></p>
+	</body>
+</html>
