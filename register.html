@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
+		<title>PBscanner</title>
+		<link rel="stylesheet" href="/static/css/style.css"/>
+		<script>
+			function seePassword() {
+				var x = document.getElementById("password");
+			
+				if (x.type === "password") {
+					x.type = "text";
+				} else {
+					x.type = "password";
+				}
+			}
+
+			function seePassword2() {
+				var x = document.getElementById("password2");
+			
+				if (x.type === "password") {
+					x.type = "text";
+				} else {
+					x.type = "password";
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<h1>Please register below</h1>
+		<form name="form" "{{ url_for('register') }}" method="post" autocomplete="off">
+			<div class="form-group">
+				{% with messages = get_flashed_messages()  %}
+				{% if messages %}
+				{% for message in messages %}
+					{% if sent == false %}
+					<div style="color:red;" role="alert">
+					{% else %}
+					<div role="alert">
+					{% endif %}
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% endif %}
+				{% endwith %}
+			</div>
+
+			<div class="form__fieldset">
+				<label for="username" class="form__label">Username:</label><br>
+				<input type="text" name="username" id="username" class="form__input" placeholder="Enter a username" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="firstname" class="form__label">First name:</label><br>
+				<input type="text" name="firstname" id="firstname" class="form__input" placeholder="Enter your first name" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="lastname" class="form__label">Last name:</label><br>
+				<input type="text" name="lastname" id="lastname" class="form__input" placeholder="Enter your last name" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="email" class="form__label">Email:</label><br>
+				<input type="email" name="email" id="email" class="form__input" placeholder="Enter your email address" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="password" class="form__label">Enter a valid password:</label><br>
+				<input type="password" name="password" id="password" class="form__input" placeholder="Enter your password" required/>
+				<input type="checkbox" onclick="seePassword()">Show Password</input><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="password2" class="form__label">Re-enter the password again:</label><br>
+				<input type="password" name="password2" id="password2" class="form__input" placeholder="Re-enter your password" required/>
+				<input type="checkbox" onclick="seePassword2()">Show Password</input><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="securityq1Field" class="form__label">What is your mother's maiden name?</label><br>
+				<input type="text" id="securityq1" name="securityq1"  class="form__input" placeholder="Enter your answer" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="securityq2Field" class="form__label">What was the name of your first pet?</label><br>
+				<input type="text" id="securityq2" name="securityq2" class="form__input" placeholder="Enter your answer" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<label for="faceimagename" class="form__label">Please select a front facing photo to use for facial login.</label><br>
+				<input type="file" id="faceimagename" name="faceimagename" class="form__input" required/><br><br>
+			</div>
+
+			<div class="form__fieldset">
+				<input class="form__submit form__input" type="submit" value="Create my account" />
+			</div>
+
+			
+			<div class="form-group">
+				<p style="padding:5px;">
+				<a href="{{ url_for('login') }}" class="btn btn-dark ">Login here</a></p>
+			</div>
+		</form>
+	</body>
+</html>
