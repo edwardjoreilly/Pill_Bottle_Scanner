@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+	<style>
+	table, td {
+	  border: 1px solid black;
+	  border-collapse: collapse;
+	  font-size: 30px;
+	}
+	th {
+	  border: 5px solid black;
+	  border-collapse: collapse;
+	  font-size: 30px;
+	}
+	table {
+	  width: 100%;
+	}
+	</style>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
+		<title>PBscanner</title>
+		<link rel="stylesheet" href="/static/css/style.css"/>
+		<link rel="shortcut icon" href="#">
+		<link rel="stylesheet" href="/static/css/styleDisplayResults.css"/>
+		<script src="/static/JavaScript/script.js"></script>
+	</head>
+	<body>
+	<mid>
+	<div class="middle">
+		<header>
+			<div class="title">PBScanner</div>
+		</header>
+		<h1>Please schedule an appointment below</h1>
+		<form name="form" "{{ url_for('reminders') }}" method="post" autocomplete="off">
+			<div class="form-group">
+				{% with messages = get_flashed_messages()  %}
+				{% if messages %}
+				{% for message in messages %}
+					{% if sent == false %}
+					<div style="color:red;" role="alert">
+					{% else %}
+					<div role="alert">
+					{% endif %}
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% endif %}
+				{% endwith %}
+			</div>
+
+			<div class="form__fieldset b a xshadow">
+				<label for="starttime" class="form__label c">Time:</label><br>
+				<input type="time" name="starttime" id="starttime" class="form__input" placeholder="Enter a start time" required/><br><br>
+			</div>
+
+			<div class="form__fieldset b a">
+				<label for="medication" class="form__label c">Medication Name:</label><br>
+				<input type="text" name="medication" id="medication" class="form__input" placeholder="Name of the medication" required/><br><br>
+			</div>
+
+			<div class="a xshadow">
+				<div class="b c">Please select the days you will take the pill on:</div><br>
+				<input type="checkbox" id="Monday" name="Monday" value="Monday">
+				<label for="Monday">Monday</label><br>
+				<input type="checkbox" id="Tuesday" name="Tuesday" value="Tuesday">
+				<label for="Tuesday">Tuesday</label><br>
+				<input type="checkbox" id="Wednesday" name="Wednesday" value="Wednesday">
+				<label for="Wednesday">Wednesday</label><br>
+				<input type="checkbox" id="Thursday" name="Thursday" value="Thursday">
+				<label for="Thursday">Thursday</label><br>
+				<input type="checkbox" id="Friday" name="Friday" value="Friday">
+				<label for="Friday">Friday</label><br>
+				<input type="checkbox" id="Saturday" name="Saturday" value="Saturday">
+				<label for="Saturday">Saturday</label><br>
+				<input type="checkbox" id="Sunday" name="Sunday" value="Sunday">
+				<label for="Sunday">Sunday</label>
+			</div>
+			
+
+
+			<div class="form__fieldset">
+				<input class="form__submit form__input" type="submit" value="Set reminder" />
+			</div>
+
+			<div class="form__fieldset">
+				<input class="form__submit form__input" type="submit" value="Edit reminder" />
+			</div>
+
+			<div class="form__fieldset">
+				<input class="form__submit form__input" type="submit" value="Remove reminder" />
+			</div>
+			
+			<div class="form-group b a">
+				<p style="padding:5px;">
+				<a href="{{ url_for('login') }}" class="btn btn-dark" style="font-size:30px">Login here</a></p>
+			</div>
+		</form>
+
+		<div class="b a c">Here is your current list of Prescriptions:</div><br>
+			<div class="table">
+				<table>
+					<tr>
+						<th>Med</th>
+						<th>Time</th>
+						<th>M</th>
+						<th>Tu</th>
+						<th>W</th>
+						<th>Th</th>
+						<th>F</th>
+						<th>Sa</th>
+						<th>Su</th>
+					</tr>
+					{% for reminder in reminders %}
+					<tr>
+						<td>test</td>
+						<td>{{ reminders['remindertime'] }}</td>
+						<td>{{ reminders['monday'] }}</td>
+						<td>{{ reminders['tuesday'] }}</td>
+						<td>{{ reminders['wednesday'] }}</td>
+						<td>{{ reminders['thursday'] }}</td>
+						<td>{{ reminders['friday'] }}</td>
+						<td>{{ reminders['saturday'] }}</td>
+						<td>{{ reminders['sunday'] }}</td>
+					<tr/>
+					{% endfor %}
+				</table>
+			</div>
+
+		<div class="form-group">
+				{% with messages = get_flashed_messages() %}
+					{% if messages %}
+						<ul>
+							{% for message in messages %}
+								<div role="alert" style="color:red;">
+									<li>{{ message }}</li>
+								</div>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				{% endwith %}
+		</div><br><br><br>
+
+		<div>
+			<a href="{{ url_for('home') }}" class="btn btn-dark " style="font-size:30px">
+				<input type="button" value="Home"/>
+			</a>
+		</div>
+		<div style="height:30px"></div>
+	</div>
+	</mid>
+	</body>
+</html>

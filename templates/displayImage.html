@@ -4,15 +4,21 @@
 		<meta charset="UTF-8">
 		<title>Display Image</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<link rel="stylesheet" href="/static/css/style.css"/>
 	</head>
 	<body>
+	<mid>
+	<div class="middle">
+	<header>
+		<div class="title">PBScanner</div>
+	</header>
 		{% if filename %}
 			<div>
 				<img src="{{ url_for('display_image', filename=filename) }}" class = "images">
 			</div>
 		{% endif %}
 
-		<br><br><div class="form-group" style="font-size:40px">
+		<div class="form-group b" style="font-size:30px">
 			{% with messages = get_flashed_messages() %}
 				{% if messages %}
 					<ul>
@@ -24,10 +30,14 @@
 					</ul>
 				{% endif %}
 			{% endwith %}
-		</div><br><br>
+		</div>
 
 		<div>
-			<a href="{{ url_for('home') }}" class="btn btn-dark" style="font-size:40px">Home</a>
+			<a href="{{ url_for('home') }}" class="btn btn-dark" style="font-size:40px">
+				<input class="btn" type="button" value="Home"/>
+			</a>
 		</div>
+	</div>
+	</mid>
 	</body>
 </html> 
