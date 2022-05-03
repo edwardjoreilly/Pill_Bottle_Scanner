@@ -1,42 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" class="html">
-	
-	
+
+
     	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
 		<title>Feedback</title>
 		<link rel="stylesheet" href="/static/css/style.css"/>
-		<style>
-            .shadow {
-                border-radius: 5px;
-                background-color: #f2f2f2;
-                padding: 20px;
-            }
-            .textF{
-                height: 200px;
-                width: 950px;
-		font-size: 20px;
-            }
-            input[type=submit] {
-                background-color: #0452aa;
-                color: white;
-                padding: 10px 15px;
-                border: none;
-                border-radius: 10px;
-                cursor: pointer;
-		font-size: 18px;
-            }
-            input[type=submit]:hover {
-                background-color: #455aa0;
-            }
-            input[type=button]{
-                float: right;
-		padding: 10px 15px;
-		cursor: pointer;
-		font-size: 18px;
-            }
-		</style>
 	</head>
+<body>
+<mid>
+<div class="middle">
+<header>
+	<div class="title">PBScanner</div>
+</header>
     {% block content %}
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -49,7 +25,7 @@
                 </ul>
             {% endif %}
         {% endwith %}
-        <h1><center>Feedback Form</center></h1>
+        <div class="a"><h1>Feedback Form</h1></div>
         <h3>Hello, please leave us your feedback!</h3>
 	<p style="color:red; font-size: 20px; ">(Caution: If you have submitted the feedback before, the new feedback will replace the old one!)</p>
 
@@ -67,11 +43,15 @@
 	<div class = "click">
 		<a href="{{ url_for('home') }}">
     			<form action="/">
-        			 <input class="btn" type="button" value="Back to Main Menu" />
+        			 <input class="btn" type="button" value="Back to Home" />
     			</form>
 		</a>
 		<!--<a href="{{ url_for('home') }}" type= >Back to Main Menu</a></p>
         	 <input type="button" value="Back to Main Menu" > -->
 	</div>
+	<div style="height:30px"></div>
     {% endblock %}
+</div>
+</mid>
+</body>
 </html>
