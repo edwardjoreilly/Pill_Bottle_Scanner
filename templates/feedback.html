@@ -6,13 +6,13 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
 		<title>Feedback</title>
 		<link rel="stylesheet" href="/static/css/style.css"/>
-	</head>
-<body>
-<mid>
-<div class="middle">
-<header>
-	<div class="title">PBScanner</div>
-</header>
+	   </head>
+    <body>
+    <mid>
+    <div class="middle">
+    <header>
+        <div class="title">PBScanner</div>
+    </header>
     {% block content %}
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -30,7 +30,7 @@
 	<p style="color:red; font-size: 20px; ">(Caution: If you have submitted the feedback before, the new feedback will replace the old one!)</p>
 
         <div class="shadow">
-            <form name="form" "{{ url_for('feedback') }}" method="post" autocomplete="off">
+            <form name="form" action="{{ url_for('feedback') }}" method="post" autocomplete="off">
                 <!-- <input type="text" name="feedback" id="feedback" class="form__input" placeholder="Please share your thoughts with us..." required/><br><br> --> 
                 <!-- <textarea class="form__input" type="text" name="feedback" id="feedback" style="height:200px;" placeholder="Please share your thoughts with us..." required/></textarea> -->
                 <textarea class="textF" type="text" id="feedback" name="feedback" style="height:200px;" placeholder="Please share your thoughts with us..." required/></textarea>
@@ -49,7 +49,7 @@
 		<!--<a href="{{ url_for('home') }}" type= >Back to Main Menu</a></p>
         	 <input type="button" value="Back to Main Menu" > -->
 	</div>
-	<div style="height:30px"></div>
+    <div style="height:30px"></div>
     {% endblock %}
 </div>
 </mid>

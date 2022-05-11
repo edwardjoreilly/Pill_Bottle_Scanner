@@ -7,14 +7,14 @@
 		<script src="/static/JavaScript/script.js"></script>
 	</head>
 	<body>
-	<mid>
+		<mid>
 	<div class="middle">
 		<header>
 			<div class="title">PBScanner</div>
 		</header>
 		<div class="a"><br>
 		<div class="b">Please register below</div>
-		<form name="form" "{{ url_for('register') }}" method="post" autocomplete="off">
+		<form name="form" action="{{ url_for('register') }}" method="POST" autocomplete="off" enctype="multipart/form-data">
 			<div class="form-group">
 				{% with messages = get_flashed_messages()  %}
 				{% if messages %}
@@ -72,11 +72,12 @@
 				<label for="securityq2Field" class="form__label c">What was the name of your first pet?</label><br>
 				<input type="text" id="securityq2" name="securityq2" class="form__input" placeholder="Enter your answer" required/><br><br>
 			</div>
-
+<!--
 			<div class="form__fieldset">
 				<label for="faceimagename" class="form__label c">Please select a front facing photo to use for facial login (optional).</label><br>
 				<input type="file" id="faceimagename" name="faceimagename" class="form__input"/><br><br>
 			</div>
+-->
 			<div class="form__fieldset">
 				<input class="form__submit form__input" type="submit" value="Create my account" />
 			</div>
@@ -85,7 +86,7 @@
 				<p style="padding:5px;">
 				<a href="{{ url_for('login') }}" class="btn btn-dark ">Login here</a></p>
 			</div>
-		</div>
+			</div>
 		</form>
 	</div>
 	<mid>

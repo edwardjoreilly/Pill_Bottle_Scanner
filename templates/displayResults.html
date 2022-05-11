@@ -167,10 +167,12 @@
 		</head>
 	<body>
 	<mid>
+
 	<div class="middle">
 		<header>
 			<div class="title">PBScanner</div>
 		</header><div style="height:15px;"></div>
+
 		<div>
 			<a href="{{ url_for('home') }}" class="btn btn-dark"  style="font-size:30px">
 				<input type="button" value="Home"/>
@@ -183,7 +185,7 @@
 					<ul>
 						{% for message in messages %}
 							<div role="alert" style="color:red;">
-								<div class="alert" style="font-size: 32px">{{ message }}</div>
+								<li style="font-size: 32px">{{ message }}</li>
 							</div>
 						{% endfor %}
 					</ul>
@@ -193,59 +195,70 @@
 
 		<div class="form-group">
 			<script>
-				document.write('<a href="https://www.drugs.com/imprints.php?action=search&drugname=' + drugName + '" class="btn btn-dark" target="_blank" style="font-size:35px">What does this drug look like?</a>')
+				document.write('<a href="https://www.drugs.com/imprints.php?action=search&drugname=' + drugName + '" class="btn btn-dark" target="_blank" style="font-size:40px">What does this drug look like?</a>')
 			</script>
 		</div><br>
 
 		<div class="form-group">
 			<script>
-			document.write('<a href="https://www.drugs.com/cons/' + drugName + '.html" class="btn btn-dark" target="_blank" style="font-size:35px">Learn how to pronounce the name of this drug and find additional information</a>')
-			</script>
-		</div><div style="height:60px"></div>
+			document.write('<a href="https://www.drugs.com/cons/' + drugName + '.html" class="btn btn-dark" target="_blank" style="font-size:40px">Learn how to pronounce the name of this drug and find additional information</a>')
+			</script><div style="height:60px"></div>
+		</div>
 	<div class="xshadow">
 		<p class = "drugInformationDivsLabels" style = "color: red">Disclaimer:</p>
 		<div id="disclaimer" class = "drugInformationDivs" style = "color: red"></div><br><br>
 	</div>
+
 	<div>
 		<p class = "drugInformationDivsLabels">Generic name:</p>
 		<div id="generic" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div class="xshadow">
 		<p class = "drugInformationDivsLabels">Drug:</p>
 		<div id="drug" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div>
 		<p class = "drugInformationDivsLabels">Description:</p>
 		<div id="description" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div class="xshadow">
 		<p class = "drugInformationDivsLabels">Boxed Warning:</p>
 		<div id="warning" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div>
 		<p class = "drugInformationDivsLabels">Indications and Usage:</p>
 		<div id="usage" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div class="xshadow">
 		<p class = "drugInformationDivsLabels">Dosage and Administration:</p>
 		<div id="dosage" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div>
 		<p class = "drugInformationDivsLabels">Drug Interactions:</p>
 		<div id="interactions" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div class="xshadow">
 		<p class = "drugInformationDivsLabels">Nursing Mothers:</p>
 		<div id="mothers" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div>
 		<p class = "drugInformationDivsLabels">Pediatric Use:</p>
 		<div id="children" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 	<div class="xshadow">
 		<p class = "drugInformationDivsLabels">Adverse Reactions:</p>
 		<div id="reactions" class = "drugInformationDivs"></div><br><br>
 	</div>
+
 		<a href="{{ url_for('home') }}" class="btn btn-dark" style="font-size:40px">
 			<input type="button" value="Home"/>
 		</a>

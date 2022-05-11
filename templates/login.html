@@ -47,13 +47,13 @@
 						<input type="text" name="username" placeholder="Username" id="username" class="form__input" required/><br><br>
 					</div>
 
-					<div class="form__fieldset">
+			<div class="form__fieldset">
 						<label for="password" class="form__label c">Password:</label><br>
 						<input type="password" name="password" placeholder="Password" id="password" class="form__input" required/><br><br>
 						<input type="checkbox" onclick="seePassword()">Show Password</input><br><br>
 					</div>
 
-					<div class="form__fieldset">
+			<div class="form__fieldset">
 						<input class="form__submit form__input" type="submit" value="Login" name=""/>
 					</div>
 					</form>
@@ -67,8 +67,8 @@
 						{% endfor %}
 						{% endif %}
 						{% endwith %}
-						<div>Login with Facial Recognition? <a href="{{ url_for('facelogin') }}">Login here</a></div>
-						<div style="height: 15px"></div>
+						<!--<div>Login with Facial Recognition? <a href="{{ url_for('facelogin') }}">Login here</a></div>
+						<div style="height: 15px"></div>-->
 						<div>No account? <a href="{{ url_for('register') }}">Register here</a></div>
 						<div style="height: 15px"></div>
 						<div>Forgot Password? <a href="{{ url_for('forgotpassword') }}">Recover here</a></div>
@@ -78,8 +78,8 @@
 					</div>
 				</div>
 			</div>
-			</div>
-		</div>
+					</div>
+				</div>
 	</div>
 	</mid>
 	</body>

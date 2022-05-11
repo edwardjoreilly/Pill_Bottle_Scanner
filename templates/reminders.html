@@ -30,97 +30,88 @@
 			<div class="title">PBScanner</div>
 		</header>
 		<h1>Please schedule an appointment below</h1>
-		<form name="form" "{{ url_for('reminders') }}" method="post" autocomplete="off">
-			<div class="form-group">
-				{% with messages = get_flashed_messages()  %}
-				{% if messages %}
-				{% for message in messages %}
-					{% if sent == false %}
-					<div style="color:red;" role="alert">
-					{% else %}
-					<div role="alert">
-					{% endif %}
-						{{ message }}
-					</div>
-				{% endfor %}
+		<div class="form-group">
+			{% with messages = get_flashed_messages()  %}
+			{% if messages %}
+			{% for message in messages %}
+				{% if sent == false %}
+				<div style="color:red;" role="alert">
+				{% else %}
+				<div role="alert">
 				{% endif %}
-				{% endwith %}
-			</div>
+					{{ message }}
+				</div>
+			{% endfor %}
+			{% endif %}
+			{% endwith %}
+		</div>
 
+		<form name="form" action="{{ url_for('addReminder') }}" method="POST" enctype="multipart/form-data" autocomplete="off">
 			<div class="form__fieldset b a xshadow">
-				<label for="starttime" class="form__label c">Time:</label><br>
-				<input type="time" name="starttime" id="starttime" class="form__input" placeholder="Enter a start time" required/><br><br>
+				<label for="remindertime" class="form__label">Time:</label><br>
+				<input type="time" name="remindertime" id="remindertime" class="form__input" placeholder="Enter a reminder time" required/><br><br>
 			</div>
 
 			<div class="form__fieldset b a">
-				<label for="medication" class="form__label c">Medication Name:</label><br>
+				<label for="medication" class="form__label">Medication Name:</label><br>
 				<input type="text" name="medication" id="medication" class="form__input" placeholder="Name of the medication" required/><br><br>
 			</div>
 
 			<div class="a xshadow">
-				<div class="b c">Please select the days you will take the pill on:</div><br>
+				<p>Please select the days you will take the medication on:</p>
 				<input type="checkbox" id="Monday" name="Monday" value="Monday">
 				<label for="Monday">Monday</label><br>
 				<input type="checkbox" id="Tuesday" name="Tuesday" value="Tuesday">
 				<label for="Tuesday">Tuesday</label><br>
 				<input type="checkbox" id="Wednesday" name="Wednesday" value="Wednesday">
-				<label for="Wednesday">Wednesday</label><br>
+				<label for="Wednesday">Wednesday</label>
 				<input type="checkbox" id="Thursday" name="Thursday" value="Thursday">
-				<label for="Thursday">Thursday</label><br>
+				<label for="Thursday">Thursday</label>
 				<input type="checkbox" id="Friday" name="Friday" value="Friday">
-				<label for="Friday">Friday</label><br>
+				<label for="Friday">Friday</label>
 				<input type="checkbox" id="Saturday" name="Saturday" value="Saturday">
-				<label for="Saturday">Saturday</label><br>
+				<label for="Saturday">Saturday</label>
 				<input type="checkbox" id="Sunday" name="Sunday" value="Sunday">
 				<label for="Sunday">Sunday</label>
 			</div>
-			
-
 
 			<div class="form__fieldset">
 				<input class="form__submit form__input" type="submit" value="Set reminder" />
 			</div>
-
-			<div class="form__fieldset">
-				<input class="form__submit form__input" type="submit" value="Edit reminder" />
-			</div>
-
-			<div class="form__fieldset">
-				<input class="form__submit form__input" type="submit" value="Remove reminder" />
-			</div>
-			
-			<div class="form-group b a">
-				<p style="padding:5px;">
-				<a href="{{ url_for('login') }}" class="btn btn-dark" style="font-size:30px">Login here</a></p>
-			</div>
 		</form>
 
-		<div class="b a c">Here is your current list of Prescriptions:</div><br>
+		<form action="{{ url_for('deleteReminder') }}" method="POST" enctype="multipart/form-data" name="form">
+				<label for="medicinename" class="form__label">Please enter the name of the medicine that you want to delete:</label><br><br>
+				<input type="text" name="medicinename" placeholder="Please enter medicine name here" id="medicinename" class="form__submit form__input" required/><br><br>
+				<input class="form__submit form__input" type="submit" onclick="return confirm('Are you sure you want to delete this reminder?')" /value="Remove reminder" />
+		</form>
+
+		<div class="b a c">Here is your current list of Reminders:</div><br>
 			<div class="table">
 				<table>
 					<tr>
-						<th>Med</th>
+						<th>Medication</th>
 						<th>Time</th>
-						<th>M</th>
-						<th>Tu</th>
-						<th>W</th>
-						<th>Th</th>
-						<th>F</th>
-						<th>Sa</th>
-						<th>Su</th>
+						<th>Monday</th>
+						<th>Tuesday</th>
+						<th>Wednesday</th>
+						<th>Thursday</th>
+						<th>Friday</th>
+						<th>Saturday</th>
+						<th>Sunday</th>
 					</tr>
 					{% for reminder in reminders %}
 					<tr>
-						<td>test</td>
-						<td>{{ reminders['remindertime'] }}</td>
-						<td>{{ reminders['monday'] }}</td>
-						<td>{{ reminders['tuesday'] }}</td>
-						<td>{{ reminders['wednesday'] }}</td>
-						<td>{{ reminders['thursday'] }}</td>
-						<td>{{ reminders['friday'] }}</td>
-						<td>{{ reminders['saturday'] }}</td>
-						<td>{{ reminders['sunday'] }}</td>
-					<tr/>
+						<td>{{ reminder['medicinename'] }}</td>
+						<td>{{ reminder['remindertime'] }}</td>
+						<td>{{ reminder['monday'] }}</td>
+						<td>{{ reminder['tuesday'] }}</td>
+						<td>{{ reminder['wednesday'] }}</td>
+						<td>{{ reminder['thursday'] }}</td>
+						<td>{{ reminder['friday'] }}</td>
+						<td>{{ reminder['saturday'] }}</td>
+						<td>{{ reminder['sunday'] }}</td>
+					</tr>
 					{% endfor %}
 				</table>
 			</div>
@@ -144,7 +135,12 @@
 				<input type="button" value="Home"/>
 			</a>
 		</div>
-		<div style="height:30px"></div>
+
+		<div class="form-group b a">
+				<p style="padding:5px;">
+				<a href="{{ url_for('login') }}" class="btn btn-dark ">Login here</a></p>
+		</div>
+	<div style="height:30px"></div>
 	</div>
 	</mid>
 	</body>
