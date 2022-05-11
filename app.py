@@ -42,7 +42,7 @@ FOLDER_PATH = r'static/uploads/'
 
 # secret key for flash messages
 ### [REMOVE THIS SECRET KEY FROM THIS FILE BEFORE UPLOADING TO GITHUB OTHERWISE THE SECRET KEY WILL BE MADE PUBLIC (i.e. app.secret_key ='']) ###
-app.secret_key = 
+app.secret_key = '\x9f\xed\xb7\xb4bo\xc4\xb5\xcb\x00W\x0b'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
@@ -68,7 +68,7 @@ client = vision.ImageAnnotatorClient()
 
 # Elephant SQL connection
 ### [REMOVE THIS POSTGRESQL WEBLINK FROM THIS FILE BEFORE UPLOADING TO GITHUB OTHERWISE DB ACCESS WILL BE MADE PUBLIC (i.e. POSTGRESQL_URI =""]) ###
-POSTGRESQL_URI = ""
+POSTGRESQL_URI = "postgres://zvnmwduo:gjGsAHHJjKbCnQLSEmyS3H2VlnMk-ZIq@kashin.db.elephantsql.com/zvnmwduo"
 connection = psycopg2.connect(POSTGRESQL_URI)
 
 # Create users table
@@ -232,7 +232,7 @@ def displayResults():
 	l = []
 	l.append('https://serpapi.com/search.json?engine=google&q=')
 	l.append(drugName)
-	l.append('&')
+	l.append('&api_key=c6f51f59a5eac798d90e841d2d154c9adf57fca6c81fad8536377a3c550aa3ee')
 	s = ''.join(l)
 
 	req = requests.get(s)
