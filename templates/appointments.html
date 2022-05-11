@@ -21,7 +21,6 @@
 		<link rel="stylesheet" href="/static/css/style.css"/>
 		<link rel="shortcut icon" href="#">
 		<link rel="stylesheet" href="/static/css/styleDisplayResults.css"/>
-		<script src="/static/JavaScript/script.js"></script>
 	</head>
 	<body>
 	<mid>
@@ -30,98 +29,93 @@
 			<div class="title">PBScanner</div>
 		</header>
 		<h1>Please schedule an appointment below</h1>
-	<div class="b a">
-		<form name="form" "{{ url_for('appointments') }}" method="post" autocomplete="off">
-			<div class="form-group">
-				{% with messages = get_flashed_messages()  %}
-				{% if messages %}
-				{% for message in messages %}
-					{% if sent == false %}
-					<div style="color:red;" role="alert">
-					{% else %}
-					<div role="alert">
-					{% endif %}
-						{{ message }}
-					</div>
-				{% endfor %}
+		<div class="b a">
+		<div class="form-group">
+			{% with messages = get_flashed_messages()  %}
+			{% if messages %}
+			{% for message in messages %}
+				{% if sent == false %}
+				<div style="color:red;" role="alert">
+				{% else %}
+				<div role="alert">
 				{% endif %}
-				{% endwith %}
-			</div>
+					{{ message }}
+				</div>
+			{% endfor %}
+			{% endif %}
+			{% endwith %}
+		</div>
 
+		<form action="{{ url_for('addApp') }}" method="POST" enctype="multipart/form-data" autocomplete="off" name="form">
 			<div class="form__fieldset xshadow">
-				<label for="starttime" class="form__label d">Start Time:</label><br>
+				<label for="starttime" class="form__label">Start Time:</label><br>
 				<input type="time" name="starttime" id="starttime" class="form__input" placeholder="Enter a start time" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="endtime" class="form__label d">End Time:</label><br>
+				<label for="endtime" class="form__label">End Time:</label><br>
 				<input type="time" name="endtime" id="endtime" class="form__input" placeholder="Enter an end time" required/><br><br>
 			</div>
 
 			<div class="form__fieldset xshadow">
-				<label for="date" class="form__label d">Date:</label><br>
+				<label for="date" class="form__label">Date:</label><br>
 				<input type="date" name="date" id="date" class="form__input" placeholder="Enter your last name" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="remindertime" class="form__label d">Time at which you want to be reminded:</label><br>
+				<label for="remindertime" class="form__label">Time at which you want to be reminded:</label><br>
 				<input type="time" name="remindertime" id="remindertime" class="form__input" placeholder="Enter a reminder time" required/><br><br>
 			</div>
 
 			<div class="form__fieldset xshadow">
-				<label for="appname" class="form__label d">Appointment Name:</label><br>
-				<input type="appname" name="appname" id="appname" class="form__input" placeholder="Enter appointment name" required/><br><br>
+				<label for="appname" class="form__label">Appointment Name:</label><br>
+				<input type="text" name="appname" id="appname" class="form__input" placeholder="Enter appointment name" required/><br><br>
 			</div>
 
 			<div class="form__fieldset">
-				<label for="location" class="form__label d">Location:</label><br>
-				<input type="location" name="location" id="location" class="form__input" placeholder="Enter a location" required/><br><br>
+				<label for="location" class="form__label">Location (optional):</label><br>
+				<input type="text" name="location" id="location" class="form__input" placeholder="Enter a location"/><br><br>
 			</div>
 
 			<div class="form__fieldset xshadow">
-				<label for="doctorname" class="form__label d">Doctor Name:</label><br>
-				<input type="doctorname" name="doctorname" id="doctorname" class="form__input" placeholder="Enter the name of the doctor" required/><br><br>
+				<label for="doctorname" class="form__label">Doctor Name (optional):</label><br>
+				<input type="text" name="doctorname" id="doctorname" class="form__input" placeholder="Enter the name of the doctor"/><br><br>
 			</div>
 
 			<div class="form__fieldset">
 				<input class="form__submit form__input" type="submit" value="Add appointment" />
 			</div>
-
-			<div class="form__fieldset">
-				<input class="form__submit form__input" type="submit" value="Edit appointment" />
-			</div>
-
-			<div class="form__fieldset">
-				<input class="form__submit form__input" type="submit" value="Remove appointment" />
-			</div>
-			
-			<div class="form-group">
-				<p style="padding:5px;">
-				<a href="{{ url_for('login') }}" class="btn btn-dark ">Login here</a></p>
-			</div>
 		</form>
+
+		<form action="{{ url_for('deleteApp') }}" method="POST" enctype="multipart/form-data" name="form">
+				<label for="appname" class="form__label">Please enter the name of the appointment that you want to delete:</label><br><br>
+				<input type="text" name="appname" placeholder="Please enter appointment name here" id="appname" class="form__submit form__input" required/><br><br>
+				<input class="form__submit form__input" type="submit" onclick="return confirm('Are you sure you want to delete this reminder?')" /value="Remove appointment" />
+		</form>
+		
 	</div>
-		<div class="b a">Here is your current list of Prescriptions:</div><br>
+
+		<div class="b a">Here is your current list of Appointments:</div><br>
 			<div class="table">
 				<table>
 					<tr>
-						<th>Name</th>
+						<th>Appointment Name</th>
 						<th>Date</th>
-						<th>Start</th>
-						<th>End</th>
-						<th>Time</th>
-						<th>Doctor</th>
+						<th>Start time</th>
+						<th>End Time</th>
+						<th>Reminder Time</th>
+						<th>Doctor Name</th>
 						<th>Location</th>
 					</tr>
 					{% for appointment in appointments %}
 					<tr>
-						<td>{{ appointments['appointmentname'] }}</td>
-						<td>{{ appointments['appdate'] }}</td>
-						<td>{{ appointments['starttime'] }}</td>
-						<td>{{ appointments['endtime'] }}</td>
-						<td>{{ appointments['remindertime'] }}</td>
-						<td>{{ appointments['doctorname'] }}</td>
-						<td>{{ appointments['location'] }}</td>
+						<td>{{ appointment['appointmentname'] }}</td>
+						<td>{{ appointment['appdate'] }}</td>
+						<td>{{ appointment['starttime'] }}</td>
+						<td>{{ appointment['endtime'] }}</td>
+						<td>{{ appointment['remindertime'] }}</td>
+						<td>{{ appointment['doctorname'] }}</td>
+						<td>{{ appointment['location'] }}</td>
 					</tr>
 					{% endfor %}
 				</table>
@@ -145,6 +139,10 @@
 			<a href="{{ url_for('home') }}" class="btn btn-dark " style="font-size:30px">
 				<input type="button" value="Home"/>
 			</a>
+		</div>
+		<div class="form-group b a">
+			<p style="padding:5px;">
+			<a href="{{ url_for('login') }}" class="btn btn-dark ">Login here</a></p>
 		</div>
 		<div style="height:30px"></div>
 	</div>

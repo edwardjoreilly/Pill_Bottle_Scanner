@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="html">
-	<style>
+		<style>
 	table, td {
 	  border: 1px solid black;
 	  border-collapse: collapse;
@@ -17,7 +17,7 @@
 	</style>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8" />
-		<title>Home</title>
+		<title>Homepage</title>
 		<link rel="stylesheet" href="/static/css/style.css"/>
 		<link rel="shortcut icon" href="#">
 		<link rel="stylesheet" href="/static/css/styleDisplayResults.css"/>
@@ -63,27 +63,31 @@
 				{% endwith %}
 			</div><br><br><br>
 			<div class="xshadow">
-				<form method="POST" action="{{ url_for('add') }}" enctype="multipart/form-data" name="form">
-					<label class="form__label c">Upload a new image here:</label><br><br>
-					<input type="file" name="file" class="form__input form__submit" autocomplete="off" style="max-width: 70%" required><br><br>
-					<input type="submit" value="Add a new prescription" class="form__input form__submit " style="max-width: 95%">
+
+				<form action="{{ url_for('add') }}" method="POST" enctype="multipart/form-data" name="form">
+					<label class="form__label">Upload a new image here:</label><br><br>
+					<input type="file" name="file" class="form__input form__submit" autocomplete="off" required><br><br>
+					<input type="submit" value="Add a new prescription from an image" class="form__input form__submit ">
 				</form>
 			</div><br><br>
 
 				<form action="{{ url_for('delete') }}" method="POST" name="form">
-					<label class="form__label c">Please enter the ID# next to the Prescription that you want to delete:</label><br><br>
-					<input type="text" name="ID" placeholder="Please enter ID # here" id="ID" class="form__submit form__input" style="max-width: 70%" required/><br><br>
-					<input class="form__submit form__input" type="submit" value="Remove Prescription" style="max-width: 95%" onclick="return confirm('Are you sure you want to delete this post?')" />
+					<label for="ID" class="form__label">Please enter the ID# next to the Prescription that you want to delete:</label><br><br>
+					<input type="text" name="ID" placeholder="Please enter ID # here" id="ID" class="form__submit form__input" required/><br><br>
+					<input class="form__submit form__input" type="submit" value="Remove Prescription" onclick="return confirm('Are you sure you want to delete this post?')" />
 				</form><br><br><br>
-			<div class="xshadow"><br><br><br>
+
+				<div class="xshadow"><br><br><br>
+
 				<form action="{{ url_for('displayResults') }}" method="POST" name="form">
-					<label class="form__label c">Please enter the name of the drug you wish to learn more about in the box below.</label><br><br>
-					<input type="search" name="drugName" placeholder="Drug name:" id="drugName" class="form__submit form__input" style="max-width: 70%" required/><br><br>
-					<input id = "apiSearch" class="form__submit form__input" type="submit" value="Search for drug" style="max-width: 95%"/><br><br>
+					<label class="form__label">Please enter the name of the drug you wish to learn more about in the box below.</label><br><br>
+					<input type="search" name="drugName" placeholder="Drug name:" id="drugName" class="form__submit form__input" required/><br><br>
+					<input id = "apiSearch" class="form__submit form__input" type="submit" value="Search for drug"/><br><br>
 				</form>
 			</div><br><br>
+
 			<div>
-				<a href="{{ url_for('logout') }}" class="btn btn-dark " style="font-size: 30px">Logout</a>
+				<a href="{{ url_for('logout') }}" class="btn btn-dark ">Logout</a>
 			</div><br>
 		{% endblock %}
 
@@ -101,27 +105,21 @@
 		</div>
 
 		<div>
-			<a href="{{ url_for('appointments') }}" class="btn btn-dark ">
-				<input type="button" value="Appointments"/>
-			</a>
-		</div><div style="height: 8px"></div>
+			<a href="{{ url_for('appointments') }}" class="btn btn-dark ">Appointments</a>
+		</div>
 
 		<div>
-			<a href="{{ url_for('reminders') }}" class="btn btn-dark ">
-				<input type="button" value="Reminders"/>
-			</a>
-		</div><div style="height: 8px"></div>
+			<a href="{{ url_for('reminders') }}" class="btn btn-dark ">Reminders</a>
+		</div>
 
 		<div>
-			<a href="{{ url_for('feedback') }}" class="btn btn-dark ">
-				<input type="button" value="Feedback"/>
-			</a>
-		</div><br>
+			<a href="{{ url_for('feedback') }}" class="btn btn-dark ">Feedback</a>
+		</div>
 
 		<script src="/static/JavaScript/script.js"></script>
 	</body>
 	</div>
 	</div>
 	</div>
-	<mid>
+	</mid>
 </html>
