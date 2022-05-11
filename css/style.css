@@ -1,0 +1,135 @@
+html {
+  font-size: 17px;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+body {
+  max-width: 2000px;
+  margin: 0 auto;
+  background-color: #FFFFFF;
+}
+
+.form__fieldset {
+  padding: 40px 20px;
+}
+
+.form__fieldset:not(:last-of-type) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.form__input {
+  font-size: 1rem;
+}
+
+.form__select {
+  padding: 4px 2px;
+}
+
+.form__label {
+  margin-right: 20px;
+}
+
+.form__submit {
+  padding: 8px 16px;
+  background-color: unset;
+  border: 2px solid #1c2023;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.form__submit:hover {
+  background-color: #1c2023;
+  color: white;
+}
+
+.html {
+  font-size: 30px;
+}
+
+.table {
+  font-size: 57px;
+}
+
+.images {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.drugInformationDivsLabels {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.drugInformationDivs {
+  font-size: 25px;
+}
+
+header .title {
+  font-family: Palatino, URW Palladio L, serif;
+  font-size: 40px;
+  font-weight: 300;
+  text-align: center;
+}
+title1 {
+  font-family: Times New Roman;
+  font-size: 24px;
+}
+
+div.a {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+div.b {
+  font-family: serif;
+}
+.c {
+  padding-left: 15px;
+}
+.d {
+  padding-left: 20px;
+}
+mid {
+  align-items: center;
+}
+mid .middle {
+  text-align: center;
+}
+
+.shadow {
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.xshadow {
+  border-radius: 5px;
+  background-color: #e8e8e8;
+  padding: 20px;
+}
+
+.textF{
+  height: 200px;
+  width: 80%;
+  font-size: 20px;
+}
+
+input[type=submit] {
+  background-color: #0452aa;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+input[type=submit]:hover {
+  background-color: #455aa0;
+}
+
+input[type=button]{
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 18px;
+}
