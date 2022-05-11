@@ -63,15 +63,7 @@ body {
 .drugInformationDivs {
   font-size: 25px;
 }
-header {
-  background-color: #0083cb;
-  align-items: center;
-  box-sizing: border-box;
-  border-bottom: 1px solid #000000;
-}
-.page {
-  border-bottom:1px solid #000000;
-}
+
 header .title {
   font-family: Palatino, URW Palladio L, serif;
   font-size: 40px;
@@ -82,10 +74,12 @@ title1 {
   font-family: Times New Roman;
   font-size: 24px;
 }
+
 div.a {
   font-size: 28px;
   font-weight: 600;
 }
+
 div.b {
   font-family: serif;
 }
@@ -107,16 +101,19 @@ mid .middle {
   background-color: #f2f2f2;
   padding: 20px;
 }
+
 .xshadow {
   border-radius: 5px;
   background-color: #e8e8e8;
   padding: 20px;
 }
+
 .textF{
   height: 200px;
   width: 80%;
   font-size: 20px;
 }
+
 input[type=submit] {
   background-color: #0452aa;
   color: white;
@@ -126,9 +123,11 @@ input[type=submit] {
   cursor: pointer;
   font-size: 18px;
 }
+
 input[type=submit]:hover {
   background-color: #455aa0;
 }
+
 input[type=button]{
   padding: 10px 15px;
   cursor: pointer;
